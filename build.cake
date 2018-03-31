@@ -83,7 +83,7 @@ Task("Pack")
         {
             AppVeyor.UploadArtifact(artifactFilePath, new AppVeyorUploadArtifactsSettings
             {
-                DeploymentName = "gunnsoft-aspnetcore-identiy-mongodb"
+                DeploymentName = "gunnsoft-aspnetcore-identity-mongodb"
             });
         }
     });
