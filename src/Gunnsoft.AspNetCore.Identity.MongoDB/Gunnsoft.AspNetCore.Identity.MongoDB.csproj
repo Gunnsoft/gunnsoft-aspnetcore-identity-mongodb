@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Title>Gunnsoft.AspNetCore.Identity.MongoDB</Title>
+    <AssemblyName>Gunnsoft.AspNetCore.Identity.MongoDB</AssemblyName>
+    <PackageId>Gunnsoft.AspNetCore.Identity.MongoDB</PackageId>
+    <Authors>Andrew Gunn</Authors>
+    <Company>Gunnsoft</Company>
+    <AssemblyTitle>Gunnsoft.AspNetCore.Identity.MongoDB</AssemblyTitle>
+    <Description>
+      Gunnsoft ASP.NET Core Identity MongoDB
+    </Description>
+    <Copyright>Copyright © Gunnsoft 2018</Copyright>
+    <PackageTags>Gunnsoft</PackageTags>
+    <PackageProjectUrl>https://github.com/Gunnsoft/gunnsoft-aspnetcore-identity-mongodb</PackageProjectUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/Gunnsoft/gunnsoft-aspnetcore-identity-mongodb</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="IdentityModel" Version="3.3.1" />
+    <PackageReference Include="IdentityServer4.AspNetIdentity" Version="2.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.0.2" />
+    <PackageReference Include="MongoDB.Driver" Version="2.5.0" />
+  </ItemGroup>
+
+</Project>
