@@ -15,7 +15,7 @@
       Gunnsoft ASP.NET Core Identity MongoDB
     </Description>
     <Copyright>Copyright © Gunnsoft 2018</Copyright>
-    <PackageTags>Gunnsoft</PackageTags>
+    <PackageTags>Gunnsoft;AspNetCore;Identity;MongoDB</PackageTags>
     <PackageProjectUrl>https://github.com/Gunnsoft/gunnsoft-aspnetcore-identity-mongodb</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <RepositoryType>git</RepositoryType>
