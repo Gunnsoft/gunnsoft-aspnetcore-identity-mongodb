@@ -2,59 +2,81 @@ var target = Argument("target", "Default");
 var configuration = Argument("configuration", EnvironmentVariable("CONFIGURATION") ?? "Release");
 var artifactsDirectory = @".\artifacts";
 var version = EnvironmentVariable("APPVEYOR_BUILD_VERSION") ?? "0.0.0";
+const string errorMessage = "Process returned an error (exit code {0}).";
 
 Task("Clean")
     .Does(() =>
     {
         CleanDirectories(artifactsDirectory);
 
-        StartAndReturnProcess("dotnet", new ProcessSettings
-            {
-                Arguments = "clean"
-            })
-            .WaitForExit();
+        var exitCode = StartProcess("dotnet", new ProcessSettings
+        {
+            Arguments = "clean"
+        });
+
+        if (exitCode != 0)
+        {
+            throw new CakeException();
+        }
     });
 
 Task("Restore")
     .IsDependentOn("Clean")
     .Does(() =>
     {
-        DotNetCoreRestore();
+        var exitCode = StartProcess("dotnet", new ProcessSettings
+        {
+            Arguments = "restore"
+        });
+
+        if (exitCode != 0)
+        {
+            throw new CakeException();
+        }
     });
 
 Task("Build")
     .IsDependentOn("Restore")
     .Does(() =>
     {
-        StartAndReturnProcess("dotnet", new ProcessSettings
-            {
-                Arguments = $"build --configuration {configuration} --no-restore"
-            })
-            .WaitForExit();
+        var exitCode = StartProcess("dotnet", new ProcessSettings
+        {
+            Arguments = $"build --configuration {configuration} --no-restore"
+        });
+
+        if (exitCode != 0)
+        {
+            throw new CakeException(string.Format(System.Globalization.CultureInfo.InvariantCulture, errorMessage, exitCode));
+        }
     });
 
 Task("Test")
     .IsDependentOn("Build")
     .Does(() =>
     {
+        var exitCode = 0;
+        
         foreach (var filePath in GetFiles(@".\test\**\*.csproj")) 
         { 
             if (AppVeyor.IsRunningOnAppVeyor)
             {
-                StartAndReturnProcess("dotnet", new ProcessSettings
-                    {
-                        Arguments = $"test {filePath} --configuration {configuration} --logger:AppVeyor --no-build --no-restore"
-                    })
-                    .WaitForExit();
+                exitCode += StartProcess("dotnet", new ProcessSettings
+                {
+                    Arguments = $"test {filePath} --configuration {configuration} --logger:AppVeyor --no-build --no-restore"
+                });
             }
             else
             {
-                StartAndReturnProcess("dotnet", new ProcessSettings
-                    {
-                        Arguments = $"test {filePath} --configuration {configuration} --no-build --no-restore"
-                    })
-                    .WaitForExit();
+                exitCode += StartProcess("dotnet", new ProcessSettings
+                {
+                    Arguments = $"test {filePath} --configuration {configuration} --no-build --no-restore"
+                });
             }
+        }
+
+        if (exitCode != 0)
+        {
+            throw new CakeException(string.Format(System.Globalization.CultureInfo.InvariantCulture, errorMessage, exitCode));
         }
     });
 
@@ -62,20 +84,24 @@ Task("Publish")
     .IsDependentOn("Test")
     .Does(() => 
     {
-        StartAndReturnProcess("dotnet", new ProcessSettings
-            {
-                Arguments = $@"pack src\Gunnsoft.AspNetCore.Identity.MongoDB --configuration {configuration} --no-restore /p:Version={version}"
-            })
-            .WaitForExit();
+        var exitCode = StartProcess("dotnet", new ProcessSettings
+        {
+            Arguments = $@"pack src\Gunnsoft.AspNetCore.Identity.MongoDB --configuration {configuration} --no-restore /p:Version={version}"
+        });
+
+        if (exitCode != 0)
+        {
+            throw new CakeException(string.Format(System.Globalization.CultureInfo.InvariantCulture, errorMessage, exitCode));
+        }
     });
 
-Task("Pack")
+Task("Copy")
     .IsDependentOn("Publish")
     .Does(() =>
     {
         CreateDirectory(artifactsDirectory);
 
-        CopyFile($@".\src\Gunnsoft.AspNetCore.Identity.MongoDB\bin\{configuration}\Gunnsoft.AspNetCore.Identity.MongoDB.{version}.nupkg", $@"{artifactsDirectory}\gunnsoft-aspnetcore-identiy-mongodb.nupkg"); 
+        CopyFile($@".\src\Gunnsoft.AspNetCore.Identity.MongoDB\bin\{configuration}\Gunnsoft.AspNetCore.Identity.MongoDB.{version}.nupkg", $@"{artifactsDirectory}\gunnsoft-aspnetcore.identity.mongodb.nupkg"); 
         
         foreach (var filePath in GetFiles($@"{artifactsDirectory}\*.*")) 
         { 
@@ -90,6 +116,6 @@ Task("Pack")
     });
 
 Task("Default")
-    .IsDependentOn("Pack");
+    .IsDependentOn("Copy");
 
 RunTarget(target);
