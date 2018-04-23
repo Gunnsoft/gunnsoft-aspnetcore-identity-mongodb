@@ -101,7 +101,7 @@ Task("Copy")
     {
         CreateDirectory(artifactsDirectory);
 
-        CopyFile($@".\src\Gunnsoft.AspNetCore.Identity.MongoDB\bin\{configuration}\Gunnsoft.AspNetCore.Identity.MongoDB.{version}.nupkg", $@"{artifactsDirectory}\gunnsoft-aspnetcore.identity.mongodb.nupkg"); 
+        CopyFile($@".\src\Gunnsoft.AspNetCore.Identity.MongoDB\bin\{configuration}\Gunnsoft.AspNetCore.Identity.MongoDB.{version}.nupkg", $@"{artifactsDirectory}\gunnsoft-aspnetcore-identity-mongodb.nupkg"); 
         
         foreach (var filePath in GetFiles($@"{artifactsDirectory}\*.*")) 
         { 
